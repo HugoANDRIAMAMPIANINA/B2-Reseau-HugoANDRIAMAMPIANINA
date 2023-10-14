@@ -230,62 +230,42 @@ PS C:\Users\hugoa> curl -4 icanhazip.com
 
 ☀️ **Scan réseau**
 
-Déterminer...
+```
+PS C:\Program Files (x86)\Nmap> .\nmap -sP 192.168.240.1/24
 
-- combien il y a de machines dans le LAN auquel vous êtes connectés
-
-> Allez-y mollo, on va vite flood le réseau sinon.
-
-![Stop it](./img/stop.png)
+Nmap scan report for 192.168.240.38
+Host is up (0.76s latency).
+MAC Address: 3E:96:35:A4:EA:D8 (Unknown)
+Nmap scan report for 192.168.240.96
+Host is up.
+Nmap done: 256 IP addresses (2 hosts up) scanned in 48.13 seconds
+```
 
 # III. Le requin
 
-Faites chauffer Wireshark. Pour chaque point, je veux que vous me livrez une capture Wireshark, format `.pcap` donc.
-
-Faites *clean* 🧹, vous êtes des grands now :
-
-- livrez moi des captures réseau avec uniquement ce que je demande et pas 40000 autres paquets autour
-  - vous pouvez sélectionner seulement certains paquets quand vous enregistrez la capture dans Wireshark
-- stockez les fichiers `.pcap` dans le dépôt git et côté rendu Markdown, vous me faites un lien vers le fichier, c'est cette syntaxe :
-
-```markdown
-[Lien vers capture ARP](./captures/arp.pcap)
-```
-
----
-
 ☀️ **Capture ARP**
 
-- 📁 fichier `arp.pcap`
-- capturez un échange ARP entre votre PC et la passerelle du réseau
+[Capture ARP](./captures/arp.pcap)
 
-> Si vous utilisez un filtre Wireshark pour mieux voir ce trafic, précisez-le moi dans le compte-rendu.
+Filtre : `arp`
 
 ---
 
 ☀️ **Capture DNS**
 
-- 📁 fichier `dns.pcap`
-- capturez une requête DNS vers le domaine de votre choix et la réponse
-- vous effectuerez la requête DNS en ligne de commande
+```
+# Commande utilisée pour la requête dns
+PS C:\Users\hugoa> nslookup www.ynov.com
+```
 
-> Si vous utilisez un filtre Wireshark pour mieux voir ce trafic, précisez-le moi dans le compte-rendu.
+[Capture DNS](./captures/dns.pcap)
+
+Filtre : `dns.qry.name == "www.ynov.com"`
 
 ---
 
 ☀️ **Capture TCP**
 
-- 📁 fichier `tcp.pcap`
-- effectuez une connexion qui sollicite le protocole TCP
-- je veux voir dans la capture :
-  - un 3-way handshake
-  - un peu de trafic
-  - la fin de la connexion TCP
+[Capture TCP](./captures/tcp.pcap)
 
-> Si vous utilisez un filtre Wireshark pour mieux voir ce trafic, précisez-le moi dans le compte-rendu.
-
----
-
-![Packet sniffer](img/wireshark.jpg)
-
-> *Je sais que je vous l'ai déjà servi l'an dernier lui, mais j'aime trop ce meme hihi 🐈*
+Filtre : `tcp`
