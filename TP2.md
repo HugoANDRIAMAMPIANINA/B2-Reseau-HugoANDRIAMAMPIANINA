@@ -31,11 +31,10 @@
        valid_lft forever preferred_lft forever
 
 # Table de routage
-[hugoa@node1 ~]$ ip n s
-10.1.2.254 dev enp0s3 lladdr 08:00:27:f6:4f:f9 STALE
-10.1.1.12 dev enp0s3 lladdr 08:00:27:f6:4f:f9 STALE
-10.1.1.1 dev enp0s3 lladdr 0a:00:27:00:00:0a REACHABLE
-10.1.1.254 dev enp0s3 lladdr 08:00:27:f6:4f:f9 REACHABLE
+[hugoa@node1 ~]$ ip r s
+10.1.1.0/24 dev enp0s3 proto kernel scope link src 10.1.1.11 metric 100
+10.1.2.0/24 via 10.1.1.254 dev enp0s3 proto static metric 100
+10.1.2.254 dev enp0s3 proto static scope link metric 100
 
 # Ping de node2.lan2.tp1
 [hugoa@node1 ~]$ ping 10.1.2.12
@@ -62,55 +61,97 @@ traceroute to 10.1.2.12 (10.1.2.12), 30 hops max, 60 byte packets
 
 ☀️ **Sur `router.tp1`**
 
-- prouvez que vous avez un accès internet (ping d'une IP publique)
-- prouvez que vous pouvez résoudre des noms publics (ping d'un nom de domaine public)
+```
+# Ping ip publique Ynov
+[hugoa@router ~]$ ping 172.67.74.226
+PING 172.67.74.226 (172.67.74.226) 56(84) bytes of data.
+64 bytes from 172.67.74.226: icmp_seq=1 ttl=56 time=13.2 ms
+64 bytes from 172.67.74.226: icmp_seq=2 ttl=56 time=13.7 ms
+^C
+--- 172.67.74.226 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1003ms
+rtt min/avg/max/mdev = 13.188/13.457/13.726/0.269 ms
+
+[hugoa@router ~]$ ping google.com
+PING google.com (142.250.179.110) 56(84) bytes of data.
+64 bytes from par21s20-in-f14.1e100.net (142.250.179.110): icmp_seq=1 ttl=115 time=25.7 ms
+64 bytes from par21s20-in-f14.1e100.net (142.250.179.110): icmp_seq=2 ttl=115 time=25.2 ms
+^C
+--- google.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1003ms
+rtt min/avg/max/mdev = 25.189/25.440/25.692/0.251 ms
+```
 
 ☀️ **Accès internet LAN1 et LAN2**
 
-- ajoutez une route par défaut sur les deux machines du LAN1
-- ajoutez une route par défaut sur les deux machines du LAN2
-- configurez l'adresse d'un serveur DNS que vos machines peuvent utiliser pour résoudre des noms
-- dans le compte-rendu, mettez-moi que la conf des points précédents sur `node2.lan1.tp1`
-- prouvez que `node2.lan1.tp1` a un accès internet :
-  - il peut ping une IP publique
-  - il peut ping un nom de domaine public
+```
+[hugoa@node2 ~]$ sudo cat /etc/sysconfig/network-scripts/route-enp0s3
+default via 10.1.1.254 dev enp0s3
+10.1.2.0/24 via 10.1.1.254 dev enp0s3
+
+[hugoa@node2 ~]$ sudo cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
+DEVICE=enp0s3
+
+BOOTPROTO=static
+ONBOOT=yes
+
+IPADDR=10.1.1.12
+NETMASK=255.255.255.0
+DNS1=1.1.1.1
+
+[hugoa@node2 ~]$ ping 141.94.221.62
+PING 141.94.221.62 (141.94.221.62) 56(84) bytes of data.
+64 bytes from 141.94.221.62: icmp_seq=1 ttl=45 time=85.1 ms
+^C
+--- 141.94.221.62 ping statistics ---
+2 packets transmitted, 1 received, 50% packet loss, time 1003ms
+rtt min/avg/max/mdev = 85.072/85.072/85.072/0.000 ms
+
+[hugoa@node2 ~]$ ping httpcats.com
+PING httpcats.com (34.111.206.85) 56(84) bytes of data.
+64 bytes from 85.206.111.34.bc.googleusercontent.com (34.111.206.85): icmp_seq=1 ttl=112 time=45.1 ms
+64 bytes from 85.206.111.34.bc.googleusercontent.com (34.111.206.85): icmp_seq=2 ttl=112 time=74.0 ms
+^C
+--- httpcats.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1004ms
+rtt min/avg/max/mdev = 45.054/59.534/74.015/14.480 ms
+```
 
 # III. Services réseau
 
-**Adresses IP et routage OK, maintenant, il s'agirait d'en faire quelque chose nan ?**
-
-Dans cette partie, on va **monter quelques services orientés réseau** au sein de la topologie, afin de la rendre un peu utile que diable. Des machines qui se `ping` c'est rigolo mais ça sert à rien, des machines qui font des trucs c'est mieux.
-
 ## 1. DHCP
-
-Petite **install d'un serveur DHCP** dans cette partie. Par soucis d'économie de ressources, on recycle une des machines précédentes : `node2.lan1.tp1` devient `dhcp.lan1.tp1`.
-
-**Pour rappel**, un serveur DHCP, on en trouve un dans la plupart des LANs auxquels vous vous êtes connectés. Si quand tu te connectes dans un réseau, tu n'es pas **obligé** de saisir une IP statique à la mano, et que t'as un accès internet wala, alors il y a **forcément** un serveur DHCP dans le réseau qui t'a proposé une IP disponible.
-
-> Le serveur DHCP a aussi pour rôle de donner, en plus d'une IP disponible, deux informations primordiales pour l'accès internet : l'adresse IP de la passerelle du réseau, et l'adresse d'un serveur DNS joignable depuis ce réseau.
-
-**Dans notre TP, son rôle sera de proposer une IP libre à toute machine qui le demande dans le LAN1.**
-
-> Vous pouvez vous référer à [ce lien](https://www.server-world.info/en/note?os=Rocky_Linux_8&p=dhcp&f=1) ou n'importe quel autre truc sur internet (je sais c'est du Rocky 8, m'enfin, la conf de ce serveur DHCP ça bouge pas trop).
-
----
-
-Pour ce qui est de la configuration du serveur DHCP, quelques précisions :
-
-- vous ferez en sorte qu'il propose des adresses IPs entre `10.1.1.100` et `10.1.1.200`
-- vous utiliserez aussi une option DHCP pour indiquer aux clients que la passerelle du réseau est `10.1.1.254` : le routeur
-- vous utiliserez aussi une option DHCP pour indiquer aux clients qu'un serveur DNS joignable depuis le réseau c'est `1.1.1.1`
-
----
 
 ☀️ **Sur `dhcp.lan1.tp1`**
 
-- n'oubliez pas de renommer la machine (`node2.lan1.tp1` devient `dhcp.lan1.tp1`)
-- changez son adresse IP en `10.1.1.253`
-- setup du serveur DHCP
-  - commande d'installation du paquet
-  - fichier de conf
-  - service actif
+```
+[hugoa@dhcp ~]$ hostname
+dhcp.lan1.tp1
+
+[hugoa@dhcp ~]$ ip a
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:51:96:93 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.1.253/24 brd 10.1.1.255 scope global noprefixroute enp0s3
+
+# Commandes install serveur dhcp
+[hugoa@dhcp ~]$ sudo dnf -y install dhcp-server
+[hugoa@dhcp ~]$ sudo vim /etc/dhcp/dhcpd.conf
+[hugoa@dhcp ~]$ sudo systemctl enable --now dhcpd
+[hugoa@dhcp ~]$ firewall-cmd --add-service=dhcp --permanent
+[hugoa@dhcp ~]$ sudo firewall-cmd --runtime-to-permanent
+
+# Conf du service dhcp
+[hugoa@dhcp ~]$ sudo cat /etc/dhcp/dhcpd.conf
+default-lease-time 900;
+max-lease-time 10800;
+
+authoritative;
+
+subnet 10.1.1.0 netmask 255.255.255.0 {
+        range 10.1.1.100 10.1.1.200;
+        option routers 10.1.1.254;
+        option domain-name-servers 1.1.1.1;
+}
+```
 
 ☀️ **Sur `node1.lan1.tp1`**
 
@@ -118,6 +159,27 @@ Pour ce qui est de la configuration du serveur DHCP, quelques précisions :
 - prouvez que vous avez bien récupéré une IP *via* le DHCP
 - prouvez que vous avez bien récupéré l'IP de la passerelle
 - prouvez que vous pouvez `ping node1.lan2.tp1`
+
+```
+[hugoa@node1 ~]$ ip a show dev enp0s3
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:de:06:46 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.1.100/24 brd 10.1.1.255 scope global dynamic noprefixroute enp0s3
+       valid_lft 545sec preferred_lft 545sec
+
+[hugoa@node1 ~]$ ip r s
+default via 10.1.1.254 dev enp0s3 proto dhcp src 10.1.1.100 metric 100
+10.1.1.0/24 dev enp0s3 proto kernel scope link src 10.1.1.100 metric 100
+
+[hugoa@node1 ~]$ ping 10.1.2.11
+PING 10.1.2.11 (10.1.2.11) 56(84) bytes of data.
+64 bytes from 10.1.2.11: icmp_seq=1 ttl=63 time=3.00 ms
+64 bytes from 10.1.2.11: icmp_seq=2 ttl=63 time=2.37 ms
+^C
+--- 10.1.2.11 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1003ms
+rtt min/avg/max/mdev = 2.370/2.684/2.999/0.314 ms
+```
 
 ## 2. Web web web
 
