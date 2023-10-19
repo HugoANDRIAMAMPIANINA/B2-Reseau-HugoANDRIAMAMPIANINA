@@ -136,7 +136,7 @@ dhcp.lan1.tp1
 [hugoa@dhcp ~]$ sudo dnf -y install dhcp-server
 [hugoa@dhcp ~]$ sudo vim /etc/dhcp/dhcpd.conf
 [hugoa@dhcp ~]$ sudo systemctl enable --now dhcpd
-[hugoa@dhcp ~]$ firewall-cmd --add-service=dhcp --permanent
+[hugoa@dhcp ~]$ sudo firewall-cmd --add-service=dhcp --permanent
 [hugoa@dhcp ~]$ sudo firewall-cmd --runtime-to-permanent
 
 # Conf du service dhcp
@@ -154,11 +154,6 @@ subnet 10.1.1.0 netmask 255.255.255.0 {
 ```
 
 ☀️ **Sur `node1.lan1.tp1`**
-
-- demandez une IP au serveur DHCP
-- prouvez que vous avez bien récupéré une IP *via* le DHCP
-- prouvez que vous avez bien récupéré l'IP de la passerelle
-- prouvez que vous pouvez `ping node1.lan2.tp1`
 
 ```
 [hugoa@node1 ~]$ ip a show dev enp0s3
@@ -183,39 +178,32 @@ rtt min/avg/max/mdev = 2.370/2.684/2.999/0.314 ms
 
 ## 2. Web web web
 
-Un petit serveur web ? Pour la route ?
-
-On recycle ici, toujours dans un soucis d'économie de ressources, la machine `node2.lan2.tp1` qui devient `web.lan2.tp1`. On va y monter un serveur Web qui mettra à disposition un site web tout nul.
-
----
-
-La conf du serveur web :
-
-- ce sera notre vieil ami NGINX
-- il écoutera sur le port 80, port standard pour du trafic HTTP
-- la racine web doit se trouver dans `/var/www/site_nul/`
-  - vous y créerez un fichier `/var/www/site_nul/index.html` avec le contenu de votre choix
-- vous ajouterez dans la conf NGINX **un fichier dédié** pour servir le site web nul qui se trouve dans `/var/www/site_nul/`
-  - écoute sur le port 80
-  - répond au nom `site_nul.tp1`
-  - sert le dossier `/var/www/site_nul/`
-- n'oubliez pas d'ouvrir le port dans le firewall 🌼
-
----
-
 ☀️ **Sur `web.lan2.tp1`**
 
-- n'oubliez pas de renommer la machine (`node2.lan2.tp1` devient `web.lan2.tp1`)
-- setup du service Web
-  - installation de NGINX
-  - gestion de la racine web `/var/www/site_nul/`
-  - configuration NGINX
-  - service actif
-  - ouverture du port firewall
-- prouvez qu'il y a un programme NGINX qui tourne derrière le port 80 de la machine (commande `ss`)
-- prouvez que le firewall est bien configuré
+```
+# bloc server dans la conf nginx
+[hugoa@web ~]$ sudo cat /etc/nginx/nginx.conf | tail -7 | head -6
+    server {
+        listen       80;
+        listen       [::]:80;
+        server_name  site_nul.tp2;
+        root         /var/www/site_nul/;
+    }
+
+[hugoa@web ~]$ sudo ss -alntp | grep nginx
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=1606,fd=6),("nginx",pid=1605,fd=6))
+LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=1606,fd=7),("nginx",pid=1605,fd=7))
+
+[hugoa@web ~]$ sudo firewall-cmd --list-all | grep 80
+  ports: 80/tcp
+```
 
 ☀️ **Sur `node1.lan1.tp1`**
 
-- éditez le fichier `hosts` pour que `site_nul.tp1` pointe vers l'IP de `web.lan2.tp1`
-- visitez le site nul avec une commande `curl` et en utilisant le nom `site_nul.tp1`
+```
+[hugoa@node1 ~]$ sudo cat /etc/hosts | grep site_nul
+10.1.2.12   site_nul.tp1
+
+[hugoa@node1 ~]$ curl site_nul.tp1
+Mon super site tout pété
+```
