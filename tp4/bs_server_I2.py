@@ -10,18 +10,18 @@ s.bind((host, port))
 
 s.listen(1)
 
-conn, addr = s.accept()
-
-print(f"Un client vient de se co et son IP c'est {addr[0]}")
-
-conn.sendall(b'Hi mate!')
-
 while True:
+    
+    conn, addr = s.accept()
+
+    print(f"Un client vient de se co et son IP c'est {addr[0]}")
+
+    conn.sendall(b'Hi mate!')
 
     try:
         data = conn.recv(1024).decode()
         
-        if not data: break
+        if not data: continue
 
         print(f"{data}")
         

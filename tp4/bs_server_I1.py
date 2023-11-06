@@ -10,16 +10,16 @@ s.bind((host, port))
 
 s.listen(1)
 
-conn, addr = s.accept()
-
-conn.sendall(b'Hi mate!')
-
 while True:
+    
+    conn, addr = s.accept()
+
+    conn.sendall(b'Hi mate!')
 
     try:
         data = conn.recv(1024)
         
-        if not data: break
+        if not data: continue
 
         print(f"{data.decode()}")
 
