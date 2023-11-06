@@ -17,7 +17,7 @@ data = s.recv(1024)
 print(f"{data.decode()}")
 
 message = input("Que veux-tu envoyer au serveur : ")
-s.sendall(bytes(message))
+s.sendall(bytes(message, 'utf-8'))
 
 s.close()
 
