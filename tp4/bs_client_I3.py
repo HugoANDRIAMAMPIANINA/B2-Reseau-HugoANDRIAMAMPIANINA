@@ -24,8 +24,10 @@ if type(message) is not str:
     
 is_meo_or_waf_pattern = re.compile('(meo)|(waf)')
 
-if is_meo_or_waf_pattern.match(message):
-    s.sendall(bytes(message, 'utf-8'))
+if not is_meo_or_waf_pattern.match(message):
+    raise TypeError("L'entrée doit contenir soit 'meo' soit 'waf'")
+    
+s.sendall(bytes(message, 'utf-8'))
 
 server_response = s.recv(1024)
 
