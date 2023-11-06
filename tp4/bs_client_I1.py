@@ -10,10 +10,14 @@ s.connect((host, port))
 
 s.sendall(b'Meooooo !')
 
-data = s.recv(1024)
+try:
+    data = s.recv(1024)
 
-print(f"{data}")
+    if not data: exit(0)
+
+    print(f"{data}")
+
+except socket.error:
+    print("Error Occured.")
 
 s.close()
-
-exit(0)
