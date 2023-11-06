@@ -1,4 +1,5 @@
 import socket
+from sys import exit
 
 host = '10.1.1.11'
 port = 13337
@@ -27,3 +28,4 @@ while True:
         break
 
 conn.close()
+exit(0)
