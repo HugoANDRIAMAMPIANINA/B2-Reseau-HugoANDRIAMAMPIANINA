@@ -12,7 +12,7 @@ s.listen(1)
 
 conn, addr = s.accept()
 
-print(f"Un client vient de se co et son IP c'est {addr[1]}")
+print(f"Un client vient de se co et son IP c'est {addr[0]}")
 
 conn.sendall(b'Hi mate!')
 
