@@ -15,3 +15,5 @@ print(f"{data.decode()}")
 s.sendall(b'Meooooo !')
 
 s.close()
+
+exit(0)
