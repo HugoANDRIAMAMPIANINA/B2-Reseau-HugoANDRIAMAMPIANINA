@@ -18,6 +18,8 @@ while True:
     try:
         data = conn.recv(1024)
 
+        if not data: pass
+
         print(f"{data.decode()}")
 
     except socket.error:
