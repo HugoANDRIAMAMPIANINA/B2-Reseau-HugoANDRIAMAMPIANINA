@@ -11,7 +11,9 @@ s.listen(1)
 
 conn, addr = s.accept()
 
-print('Hi mate!')
+print('Connected by', addr)
+
+s.sendall('Hi mate!')
 
 while True:
 
