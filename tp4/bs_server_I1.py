@@ -13,7 +13,7 @@ conn, addr = s.accept()
 
 print('Connected by', addr)
 
-s.sendall(b'Hi mate!')
+conn.sendall(b'Hi mate!')
 
 while True:
 
