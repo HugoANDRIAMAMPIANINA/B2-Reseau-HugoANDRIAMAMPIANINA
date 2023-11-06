@@ -18,8 +18,8 @@ while True:
 
     try:
         data = conn.recv(1024)
-
-        if not data: sleep(1)
+        
+        if not data: break
 
         print(f"{data.decode()}")
 
