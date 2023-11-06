@@ -22,7 +22,7 @@ message = input("Que veux-tu envoyer au serveur : ")
 if type(message) is not str:
     raise TypeError("Ici on veut que des strings !")
     
-is_meo_or_waf_pattern = re.compile('(meo)|(waf)')
+is_meo_or_waf_pattern = re.compile('.*?((meo)|(waf))')
 
 if not is_meo_or_waf_pattern.match(message):
     raise TypeError("L'entrée doit contenir soit 'meo' soit 'waf'")
