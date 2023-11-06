@@ -24,6 +24,13 @@ while True:
         if not data: break
 
         print(f"{data.decode()}")
+        
+        if "meo" in data:
+            conn.sendall(bytes('Meo à toi confrère.', 'utf-8'))
+        elif "waf" in data:
+            conn.sendall(b'ptdr t ki')
+        else:
+            conn.sendall(b'Mes respects humble humain.')
 
     except socket.error:
         print("Error Occured.")
