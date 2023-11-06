@@ -1,4 +1,5 @@
 import socket
+from time import sleep
 
 host = ''
 port = 13337
@@ -18,7 +19,7 @@ while True:
     try:
         data = conn.recv(1024)
 
-        if not data: pass
+        if not data: sleep(1)
 
         print(f"{data.decode()}")
 
