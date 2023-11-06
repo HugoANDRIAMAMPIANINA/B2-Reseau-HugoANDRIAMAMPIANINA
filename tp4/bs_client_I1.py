@@ -12,7 +12,7 @@ s.sendall(b'Meooooo !')
 
 data = s.recv(1024)
 
-print(data)
+print(data.decode())
 
 s.close()
 

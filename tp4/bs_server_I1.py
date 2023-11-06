@@ -13,7 +13,7 @@ conn, addr = s.accept()
 
 print('Connected by', addr)
 
-s.sendall('Hi mate!')
+s.sendall(b'Hi mate!')
 
 while True:
 
@@ -22,7 +22,7 @@ while True:
 
         if not data: break
 
-        print(f"{data}")
+        print(f"{data.decode()}")
 
     except socket.error:
         print("Error Occured.")
