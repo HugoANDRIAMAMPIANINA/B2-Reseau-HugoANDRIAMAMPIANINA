@@ -19,11 +19,11 @@ conn.sendall(b'Hi mate!')
 while True:
 
     try:
-        data = conn.recv(1024)
+        data = conn.recv(1024).decode()
         
         if not data: break
 
-        print(f"{data.decode()}")
+        print(f"{data}")
         
         if "meo" in data:
             conn.sendall(bytes('Meo à toi confrère.', 'utf-8'))
