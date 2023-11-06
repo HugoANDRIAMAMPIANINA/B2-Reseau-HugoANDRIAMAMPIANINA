@@ -11,16 +11,12 @@ s.listen(1)
 
 conn, addr = s.accept()
 
-print('Connected by', addr)
-
 conn.sendall(b'Hi mate!')
 
 while True:
 
     try:
         data = conn.recv(1024)
-
-        if not data: break
 
         print(f"{data.decode()}")
 
