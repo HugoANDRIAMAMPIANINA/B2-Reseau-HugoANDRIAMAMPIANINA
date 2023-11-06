@@ -22,7 +22,7 @@ while True:
 
         if not data: break
 
-        print(f"{data}")
+        print(f"{data.decode()}")
 
     except socket.error:
         print("Error Occured.")
