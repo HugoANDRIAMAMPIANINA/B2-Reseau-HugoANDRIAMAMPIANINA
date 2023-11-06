@@ -30,6 +30,8 @@ while True:
 
     print(f"Un client vient de se co et son IP c'est {addr[0]}")
 
+    conn.sendall(b'Hi mate!')
+
     try:
         data = conn.recv(1024).decode()
         
