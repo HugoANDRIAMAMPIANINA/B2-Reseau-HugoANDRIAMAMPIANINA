@@ -24,7 +24,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 
 logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-logging.info(f'Le serveur tourne sur {host}:{port}')
+logging.warning(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
