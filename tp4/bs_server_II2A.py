@@ -49,10 +49,13 @@ s.bind((host, port))
 logger = logging.getLogger("colored_logger")
 logger.setLevel(logging.INFO)
 
+log_file_path = '/var/log/bs_server/bs_server.log'
+file_handler = logging.FileHandler(log_file_path)
+logger.addHandler(file_handler)
+
 console_handler = logging.StreamHandler()
 formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 console_handler.setFormatter(formatter)
-
 logger.addHandler(console_handler)
 
 # logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
@@ -69,18 +72,13 @@ while True:
         last_client_timer.cancel()
         last_client_timer = Timer(60,timeout)
         last_client_timer.start()
-        
-    try:
-        conn, addr = s.accept()
-        
-        last_client_timer.cancel()
-        
-        ip_client = addr[0]
-        
-        logger.info(f"Un client {ip_client} s'est connecté.")
-        
-    except:
-        continue
+    
+    conn, addr = s.accept()
+    last_client_timer.cancel()
+    
+    ip_client = addr[0]
+    
+    logger.info(f"Un client {ip_client} s'est connecté.")
 
     # print(f"Un client vient de se co et son IP c'est {ip_client}")
 
