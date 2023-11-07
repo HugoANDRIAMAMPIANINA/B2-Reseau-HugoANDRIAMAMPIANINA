@@ -65,18 +65,22 @@ last_client_timer.start()
 
 while True:
     
-    print(last_client_timer.finished.is_set())
     if last_client_timer.finished.is_set():
         last_client_timer.cancel()
         last_client_timer = Timer(60,timeout)
         last_client_timer.start()
-    
-    conn, addr = s.accept()
-    last_client_timer.cancel()
-    
-    ip_client = addr[0]
-    
-    logger.info(f"Un client {ip_client} s'est connecté.")
+        
+    try:
+        conn, addr = s.accept()
+        
+        last_client_timer.cancel()
+        
+        ip_client = addr[0]
+        
+        logger.info(f"Un client {ip_client} s'est connecté.")
+        
+    except:
+        continue
 
     # print(f"Un client vient de se co et son IP c'est {ip_client}")
 
