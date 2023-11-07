@@ -4,28 +4,22 @@ import argparse
 import logging
 from threading import Timer
 
-class CustomFormatter(logging.Formatter):
-    # Pour des logs en couleur dans la console
-    
-    grey = "\x1b[38;20m"
-    yellow = "\x1b[33;20m"
-    red = "\x1b[31;20m"
-    # bold_red = "\x1b[31;1m"
-    reset = "\x1b[0m"
-    format = "%(asctime)s %(levelname)s %(message)s"
-    datefmt = '%Y-%m-%d %H:%M:%S'
 
-    FORMATS = {
-        logging.DEBUG: grey + format + datefmt + reset,
-        logging.INFO: grey + format + datefmt + reset,
-        logging.WARNING: yellow + format + datefmt + reset,
-        logging.ERROR: red + format + reset,
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        'DEBUG': '\033[97m',  # White
+        'INFO': '\033[97m',   # White
+        'WARNING': '\033[93m',  # Yellow
+        'ERROR': '\033[91m',  # Red
+        'CRITICAL': '\033[95m',  # Purple
+        'RESET': '\033[0m'  # Reset color
     }
 
     def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
+        log_message = super(ColoredFormatter, self).format(record)
+        log_level = record.levelname
+        color = self.COLORS.get(log_level, self.COLORS['RESET'])
+        return f"{color}{log_message}{self.COLORS['RESET']}"
 
 
 def timeout():
@@ -52,20 +46,17 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((host, port))
 
+logger = logging.getLogger("colored_logger")
+logger.setLevel(logging.INFO)
 
-logger = logging.getLogger("Program")
-logger.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+console_handler.setFormatter(formatter)
 
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-ch.setFormatter(CustomFormatter())
-
-logger.addHandler(ch)
+logger.addHandler(console_handler)
 
 # logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logger.info(f'Le serveur tourne sur {host}:{port}')
-
 
 s.listen(1)
 
