@@ -25,12 +25,6 @@ class ColoredFormatter(logging.Formatter):
 def timeout():
     logger.warning(f'Aucun client depuis plus de une minute.')
 
-try:
-    open("/var/log/bs_server/bs_server.log")
-except:
-    print("error")
-    exit(0)
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-p", "--port", action="store", type=int, default=13337, help='precise a port to bind the program, default is 13337')
