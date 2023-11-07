@@ -31,3 +31,15 @@ Hi mate!
 [hugoa@server ~]$ ss -alntp | grep 13337
 LISTEN 0      1          10.1.1.11:13337      0.0.0.0:*    users:(("python",pid=3407,fd=3))
 ```
+
+## II
+
+### 2. A.
+
+```
+# Création du fichier de log et modification des permissions
+
+[hugoa@server tp4]$ sudo mkdir /var/log/bs_server/
+[hugoa@server tp4]$ sudo touch /var/log/bs_server/bs_server.log
+[hugoa@server tp4]$ sudo chmod -R 666 /var/log/bs_server/
+```
