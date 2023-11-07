@@ -7,6 +7,7 @@ from threading import Timer
 class CustomFormatter(logging.Formatter):
     # Pour des logs en couleur dans la console
     
+    grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"
     # bold_red = "\x1b[31;1m"
@@ -15,8 +16,8 @@ class CustomFormatter(logging.Formatter):
     datefmt = '%Y-%m-%d %H:%M:%S'
 
     FORMATS = {
-        logging.DEBUG: format + datefmt + reset,
-        logging.INFO: format + datefmt + reset,
+        logging.DEBUG: grey + format + datefmt + reset,
+        logging.INFO: grey + format + datefmt + reset,
         logging.WARNING: yellow + format + datefmt + reset,
         logging.ERROR: red + "%(levelname)s %(message)s" + reset,
     }
