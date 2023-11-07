@@ -33,7 +33,7 @@ logging.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
-last_client_timer = Timer(60,timeout,['Repeating'])
+last_client_timer = Timer(60,timeout)
 last_client_timer.start()
 
 while True:
