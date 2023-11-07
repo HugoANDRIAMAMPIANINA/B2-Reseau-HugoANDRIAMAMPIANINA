@@ -2,6 +2,7 @@ import socket
 from sys import exit
 import argparse
 import logging
+from colorama import Fore, Back, Style
 
 parser = argparse.ArgumentParser()
 
@@ -24,7 +25,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 
 logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
-logging.info(f'Le serveur tourne sur {host}:{port}')
+logging.info(Fore.WHITE + f'Le serveur tourne sur {host}:{port}')
+logging.warning(Fore.YELLOW + f'Attention bebou')
 
 s.listen(1)
 
