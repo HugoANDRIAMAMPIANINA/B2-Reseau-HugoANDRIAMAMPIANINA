@@ -38,6 +38,10 @@ last_client_timer.start()
 
 while True:
     
+    if last_client_timer.finished:
+        last_client_timer = Timer(60,timeout)
+        last_client_timer.start()
+    
     conn, addr = s.accept()
     last_client_timer.cancel()
     
@@ -67,6 +71,7 @@ while True:
         conn.sendall(bytes(server_response, 'utf-8'))
         
         logging.info(f"Réponse envoyée au client {ip_client} : {server_response}")
+        last_client_timer = Timer(60,timeout)
         last_client_timer.start()
 
     except socket.error:
