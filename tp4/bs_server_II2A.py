@@ -19,7 +19,7 @@ class CustomFormatter(logging.Formatter):
         logging.DEBUG: grey + format + datefmt + reset,
         logging.INFO: grey + format + datefmt + reset,
         logging.WARNING: yellow + format + datefmt + reset,
-        logging.ERROR: red + "%(levelname)s %(message)s" + reset,
+        logging.ERROR: red + format + reset,
     }
 
     def format(self, record):
