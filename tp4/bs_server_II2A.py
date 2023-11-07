@@ -4,8 +4,31 @@ import argparse
 import logging
 from threading import Timer
 
+class CustomFormatter(logging.Formatter):
+    # Pour des logs en couleur dans la console
+    
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    # bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    format = "%(asctime)s %(levelname)s %(message)s"
+    datefmt = '%Y-%m-%d %H:%M:%S'
+
+    FORMATS = {
+        logging.DEBUG: format + datefmt + reset,
+        logging.INFO: format + datefmt + reset,
+        logging.WARNING: yellow + format + datefmt + reset,
+        logging.ERROR: red + "%(levelname)s %(message)s" + reset,
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
+
 def timeout():
-    logging.warning(f'Aucun client depuis plus de une minute.')
+    logger.warning(f'Aucun client depuis plus de une minute.')
 
 
 parser = argparse.ArgumentParser()
@@ -28,8 +51,20 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((host, port))
 
-logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
-logging.info(f'Le serveur tourne sur {host}:{port}')
+
+logger = logging.getLogger("Program")
+logger.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+
+logger.addHandler(ch)
+
+# logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logger.info(f'Le serveur tourne sur {host}:{port}')
+
 
 s.listen(1)
 
@@ -49,7 +84,7 @@ while True:
     
     ip_client = addr[0]
     
-    logging.info(f"Un client {ip_client} s'est connecté.")
+    logger.info(f"Un client {ip_client} s'est connecté.")
 
     # print(f"Un client vient de se co et son IP c'est {ip_client}")
 
@@ -58,7 +93,7 @@ while True:
         
         if not data: continue
         
-        logging.info(f"Le client {ip_client} a envoyé {data}.")
+        logger.info(f"Le client {ip_client} a envoyé {data}.")
 
         # print(f"{data}")
         server_response = ""
@@ -72,7 +107,7 @@ while True:
             
         conn.sendall(bytes(server_response, 'utf-8'))
         
-        logging.info(f"Réponse envoyée au client {ip_client} : {server_response}")
+        logger.info(f"Réponse envoyée au client {ip_client} : {server_response}")
         last_client_timer = Timer(60,timeout)
         last_client_timer.start()
 
