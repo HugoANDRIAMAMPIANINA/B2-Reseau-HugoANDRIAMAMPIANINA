@@ -2,7 +2,6 @@ import socket
 from sys import exit
 import argparse
 import logging
-from colorama import Fore, Back, Style
 
 parser = argparse.ArgumentParser()
 
@@ -25,32 +24,40 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 
 logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
-logging.info(Fore.WHITE + f'Le serveur tourne sur {host}:{port}')
-logging.warning(Fore.YELLOW + f'Attention bebou')
+logging.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
 while True:
     
     conn, addr = s.accept()
+    
+    ip_client = addr[0]
+    
+    logging.info(f"Un client {ip_client} s'est connecté.")
 
-    print(f"Un client vient de se co et son IP c'est {addr[0]}")
-
-    conn.sendall(b'Hi mate!')
+    # print(f"Un client vient de se co et son IP c'est {ip_client}")
 
     try:
         data = conn.recv(1024).decode()
         
         if not data: continue
+        
+        logging.info(f"Le client {ip_client} a envoyé {data}.")
 
-        print(f"{data}")
+        # print(f"{data}")
+        server_response = ""
         
         if "meo" in data:
-            conn.sendall(bytes('Meo à toi confrère.', 'utf-8'))
+            server_response = "Meo à toi confrère."
         elif "waf" in data:
-            conn.sendall(b'ptdr t ki')
+            server_response = "ptdr t ki"
         else:
-            conn.sendall(b'Mes respects humble humain.')
+            server_response = "Mes respects humble humain."
+            
+        conn.sendall(bytes(server_response, 'utf-8'))
+        
+        logging.info(f"Réponse envoyée au client {ip_client} : {server_response}")
 
     except socket.error:
         print("Error Occured.")

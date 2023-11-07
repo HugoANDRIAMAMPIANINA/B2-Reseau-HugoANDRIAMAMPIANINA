@@ -12,10 +12,7 @@ try:
     print(f"Connecté avec succès au serveur {host} sur le port {port}")
 except:
     print("Il y a eu un problème pour se connecter au serveur snif")
-
-data = s.recv(1024)
-
-print(f"{data.decode()}")
+    
 
 message = input("Que veux-tu envoyer au serveur : ")
 
