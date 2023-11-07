@@ -39,6 +39,7 @@ last_client_timer.start()
 while True:
     
     if last_client_timer.finished:
+        print("lala")
         last_client_timer.cancel()
         last_client_timer = Timer(60,timeout)
         last_client_timer.start()
