@@ -2,6 +2,11 @@ import socket
 from sys import exit
 import argparse
 import logging
+from threading import Timer
+
+def timeout():
+    logging.warning(f'Aucun client depuis plus de une minute.')
+
 
 parser = argparse.ArgumentParser()
 
@@ -28,9 +33,13 @@ logging.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
+last_client_timer = Timer(60,timeout,['Repeating'])
+last_client_timer.start()
+
 while True:
     
     conn, addr = s.accept()
+    last_client_timer.cancel()
     
     ip_client = addr[0]
     
@@ -58,6 +67,7 @@ while True:
         conn.sendall(bytes(server_response, 'utf-8'))
         
         logging.info(f"Réponse envoyée au client {ip_client} : {server_response}")
+        last_client_timer.start()
 
     except socket.error:
         print("Error Occured.")
