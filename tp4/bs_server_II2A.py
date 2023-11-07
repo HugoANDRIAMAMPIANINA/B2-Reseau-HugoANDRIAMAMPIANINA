@@ -23,14 +23,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((host, port))
 
-logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-# logging.info(f'Le serveur tourne sur {host}:{port}')
-
-logging.debug('This is a debug message')
-logging.info('This is an info message')
-logging.warning('This is a warning message')
-logging.error('This is an error message')
-logging.critical('This is a critical message')
+logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logging.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
