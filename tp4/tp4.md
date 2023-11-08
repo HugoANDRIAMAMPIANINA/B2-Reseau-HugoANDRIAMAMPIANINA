@@ -34,7 +34,7 @@ LISTEN 0      1          10.1.1.11:13337      0.0.0.0:*    users:(("python",pid=
 
 ## II
 
-### 2. A.
+### 2. A. Logs serveur
 
 ```
 # Création du fichier de log et modification des permissions
@@ -43,4 +43,15 @@ LISTEN 0      1          10.1.1.11:13337      0.0.0.0:*    users:(("python",pid=
 [hugoa@server tp4]$ sudo touch /var/log/bs_server/bs_server.log
 [hugoa@server tp4]$ sudo chown -R hugoa:hugoa /var/log/bs_server/
 [hugoa@server tp4]$ sudo chmod +x /var/log/bs_server/
+```
+
+### 2. B. Logs client
+
+```
+# Création du fichier de log et modification des permissions
+
+[hugoa@client tp4]$ sudo mkdir /var/log/bs_client/
+[hugoa@client tp4]$ sudo touch /var/log/bs_client/bs_client.log
+[hugoa@client tp4]$ sudo chmod -R +x /var/log/bs_client/
+[hugoa@client tp4]$ sudo chown -R hugoa:hugoa /var/log/bs_client/
 ```

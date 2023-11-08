@@ -3,27 +3,12 @@ from sys import exit
 import argparse
 import logging
 from threading import Timer
-
-
-class ColoredFormatter(logging.Formatter):
-    COLORS = {
-        'DEBUG': '\033[97m',  # White
-        'INFO': '\033[97m',   # White
-        'WARNING': '\033[93m',  # Yellow
-        'ERROR': '\033[91m',  # Red
-        'CRITICAL': '\033[95m',  # Purple
-        'RESET': '\033[0m'  # Reset color
-    }
-
-    def format(self, record):
-        log_message = super(ColoredFormatter, self).format(record)
-        log_level = record.levelname
-        color = self.COLORS.get(log_level, self.COLORS['RESET'])
-        return f"{color}{log_message}{self.COLORS['RESET']}"
+from color_formatter import ColoredFormatter
 
 
 def timeout():
     logger.warning(f'Aucun client depuis plus de une minute.')
+
 
 parser = argparse.ArgumentParser()
 
@@ -48,19 +33,18 @@ s.bind((host, port))
 logger = logging.getLogger("colored_logger")
 logger.setLevel(logging.INFO)
 
+color_formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
 log_file_path = '/var/log/bs_server/bs_server.log'
 file_handler = logging.FileHandler(log_file_path)
+file_handler.setFormatter(color_formatter)
 
 console_handler = logging.StreamHandler()
-formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-
-file_handler.setFormatter(formatter)
-console_handler.setFormatter(formatter)
+console_handler.setFormatter(color_formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-# logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 logger.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
