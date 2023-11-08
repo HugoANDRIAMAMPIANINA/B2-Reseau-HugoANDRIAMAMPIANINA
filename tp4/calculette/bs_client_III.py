@@ -4,8 +4,9 @@ import re
 import logging
 from color_formatter import ColoredFormatter
 
+
 host = '10.1.1.11'
-port = 13337
+port = 12345
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -33,23 +34,27 @@ except:
     logger.error(f"Impossible de se connecter au serveur {host} sur le port {port}.")
     exit(1)
 
-message = input("Que veux-tu envoyer au serveur : ")
+print("La meilleure calculatrice du monde\n")
 
-if type(message) is not str:
-    raise TypeError("Ici on veut que des strings !")
-    
-is_meo_or_waf_pattern = re.compile('.*?((meo)|(waf))')
+calculation = input("Veuillez saisir votre calcul : ")
 
-if not is_meo_or_waf_pattern.match(message):
-    raise TypeError("L'entrée doit contenir soit 'meo' soit 'waf'")
-    
-s.sendall(bytes(message, 'utf-8'))
+if type(calculation) is not str:
+    raise TypeError("Veuillez saisir un calcul valide")
 
-logger.info(f"Message envoyé au serveur {host} : {message}.")
+is_calculation_valid_pattern = re.compile('^(\+|-)?([0-9]){1,5} (\+|-|\*) (\+|-)?([0-9]){1,5}$')
 
-server_response = s.recv(1024).decode()
+if not is_calculation_valid_pattern.match(calculation):
+    raise TypeError("Veuillez saisir un calcul valide (addition, soustraction ou multiplication) : choisir des nombres entiers compris entre -100000 et 100000")
 
-logger.info(f"Réponse reçue du serveur {host} : {server_response}.")
+s.sendall(bytes(calculation, 'utf-8'))
+
+logger.info(f"Message envoyé au serveur {host} : {calculation}.")
+
+result = s.recv(1024).decode()
+
+print(f"{calculation} = {result}")
+
+logger.info(f"Réponse reçue du serveur {host} : {result}.")
 
 s.close()
 
