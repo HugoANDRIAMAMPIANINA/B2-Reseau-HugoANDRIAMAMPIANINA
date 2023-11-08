@@ -2,7 +2,7 @@ import socket
 from sys import exit
 import re
 import logging
-from color_formatter import ColoredFormatter
+from tp4.color_formatter import ColoredFormatter
 
 
 host = '10.1.1.11'
