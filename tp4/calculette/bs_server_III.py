@@ -1,7 +1,7 @@
 import socket
 from sys import exit
 import logging
-from . import ColoredFormatter
+from color_formatter import ColoredFormatter
 
 
 host = '10.1.1.11'
