@@ -29,8 +29,8 @@ console_handler = logging.StreamHandler()
 console_handler.setFormatter(error_color_formatter)
 console_handler.setLevel(logging.ERROR)
 
-info_logger.addHandler(console_handler)
 info_logger.addHandler(file_handler)
+info_logger.addHandler(console_handler)
 
 # error_logger.addHandler(error_color_formatter)
 # error_logger.addHandler(error_file_handler)
