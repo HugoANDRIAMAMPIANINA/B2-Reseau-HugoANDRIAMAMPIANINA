@@ -47,7 +47,7 @@ while True:
 
         result = eval(calculation)
             
-        conn.sendall(bytes(result, 'utf-8'))
+        conn.sendall(bytes(str(result), 'utf-8'))
         
         logger.info(f"Réponse envoyée au client {ip_client} : {result}")
 
