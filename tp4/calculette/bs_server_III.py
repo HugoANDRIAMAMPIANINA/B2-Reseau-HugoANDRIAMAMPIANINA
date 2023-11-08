@@ -1,6 +1,5 @@
 import socket
 from sys import exit
-import argparse
 import logging
 from color_formatter import ColoredFormatter
 

@@ -4,6 +4,7 @@ import re
 import logging
 from color_formatter import ColoredFormatter
 
+
 host = '10.1.1.11'
 port = 13337
 
