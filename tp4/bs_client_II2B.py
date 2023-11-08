@@ -20,16 +20,19 @@ error_color_formatter = ColoredFormatter('%(levelname)s %(message)s')
 
 log_file_path = '/var/log/bs_client/bs_client.log'
 file_handler = logging.FileHandler(log_file_path)
-file_handler.setFormatter(color_formatter)
+file_handler.setFormatter(info_color_formatter)
+
+error_file_handler = logging.FileHandler(log_file_path)
+error_file_handler.setFormatter(error_color_formatter)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(color_formatter)
+console_handler.setFormatter(info_color_formatter)
 
 info_logger.addHandler(info_color_formatter)
-error_logger.addHandler(file_handler)
+info_logger.addHandler(file_handler)
 
 error_logger.addHandler(error_color_formatter)
-error_logger.addHandler(file_handler)
+error_logger.addHandler(error_file_handler)
 
 info_logger.info(f'Le serveur tourne sur {host}:{port}')
 
