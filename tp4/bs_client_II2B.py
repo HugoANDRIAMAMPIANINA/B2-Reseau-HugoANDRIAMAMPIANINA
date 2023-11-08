@@ -10,29 +10,30 @@ port = 13337
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 info_logger = logging.getLogger("info_logger")
-info_logger.setLevel(logging.ERROR)
 
-error_logger = logging.getLogger("error_logger")
-error_logger.setLevel(logging.ERROR)
+# error_logger = logging.getLogger("error_logger")
+# error_logger.setLevel(logging.ERROR)
 
-info_color_formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+color_formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 error_color_formatter = ColoredFormatter('%(levelname)s %(message)s')
 
 log_file_path = '/var/log/bs_client/bs_client.log'
 file_handler = logging.FileHandler(log_file_path)
-file_handler.setFormatter(info_color_formatter)
+file_handler.setFormatter(color_formatter)
+file_handler.setLevel(logging.INFO)
 
-error_file_handler = logging.FileHandler(log_file_path)
-error_file_handler.setFormatter(error_color_formatter)
+# error_file_handler = logging.FileHandler(log_file_path)
+# error_file_handler.setFormatter(error_color_formatter)
 
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(info_color_formatter)
+console_handler.setFormatter(error_color_formatter)
+console_handler.setLevel(logging.ERROR)
 
-info_logger.addHandler(info_color_formatter)
+info_logger.addHandler(console_handler)
 info_logger.addHandler(file_handler)
 
-error_logger.addHandler(error_color_formatter)
-error_logger.addHandler(error_file_handler)
+# error_logger.addHandler(error_color_formatter)
+# error_logger.addHandler(error_file_handler)
 
 info_logger.info(f'Le serveur tourne sur {host}:{port}')
 
