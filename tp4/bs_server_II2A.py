@@ -48,13 +48,13 @@ s.bind((host, port))
 logger = logging.getLogger("colored_logger")
 logger.setLevel(logging.INFO)
 
-console_handler = logging.StreamHandler()
-formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-
 log_file_path = '/var/log/bs_server/bs_server.log'
 file_handler = logging.FileHandler(log_file_path)
+
+formatter = ColoredFormatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+file_handler.setFormatter(formatter)
+
 logger.addHandler(file_handler)
 
 # logging.basicConfig(format=f'%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
