@@ -22,6 +22,7 @@ file_handler = logging.FileHandler(log_file_path)
 file_handler.setFormatter(color_formatter)
 file_handler.setLevel(logging.INFO)
 
+info_logger.addHandler(file_handler)
 # error_file_handler = logging.FileHandler(log_file_path)
 # error_file_handler.setFormatter(error_color_formatter)
 
@@ -29,7 +30,6 @@ console_handler = logging.StreamHandler()
 console_handler.setFormatter(error_color_formatter)
 console_handler.setLevel(logging.ERROR)
 
-info_logger.addHandler(file_handler)
 info_logger.addHandler(console_handler)
 
 # error_logger.addHandler(error_color_formatter)
