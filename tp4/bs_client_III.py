@@ -48,13 +48,13 @@ if not is_calculation_valid_pattern.match(calculation):
 
 s.sendall(bytes(calculation, 'utf-8'))
 
-logger.info(f"Message envoyé au serveur {host} : {calculation}.")
+logger.info(f"Calcul envoyé au serveur {host} : {calculation}.")
 
 result = s.recv(1024).decode()
 
 print(f"{calculation} = {result}")
 
-logger.info(f"Réponse reçue du serveur {host} : {result}.")
+logger.info(f"Résultat reçu du serveur {host} : {result}.")
 
 s.close()
 

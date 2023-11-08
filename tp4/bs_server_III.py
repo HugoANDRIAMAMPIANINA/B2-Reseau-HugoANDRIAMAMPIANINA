@@ -43,13 +43,13 @@ while True:
         
         if not calculation: continue
         
-        logger.info(f"Le client {ip_client} a envoyé : {calculation}.")
+        logger.info(f"Calcul reçu du client {ip_client} : {calculation}.")
 
         result = eval(calculation)
             
         conn.sendall(bytes(str(result), 'utf-8'))
         
-        logger.info(f"Réponse envoyée au client {ip_client} : {result}")
+        logger.info(f"Résultat envoyée au client {ip_client} : {result}")
 
     except socket.error:
         print("Error Occured.")
