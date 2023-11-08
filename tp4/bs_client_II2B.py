@@ -43,7 +43,7 @@ try:
     # print(f"Connecté avec succès au serveur {host} sur le port {port}")
 except:
     info_logger.error(f"Impossible de se connecter au serveur {host} sur le port {port}.")
-    
+    exit(1)
 
 message = input("Que veux-tu envoyer au serveur : ")
 
