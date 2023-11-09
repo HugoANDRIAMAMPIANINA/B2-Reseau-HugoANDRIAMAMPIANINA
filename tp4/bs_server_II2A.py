@@ -4,7 +4,7 @@ import argparse
 import logging
 from threading import Timer
 from color_formatter import ColoredFormatter
-
+from repeated_timer import RepeatTimer
 
 def timeout():
     logger.warning(f'Aucun client depuis plus de une minute.')
@@ -49,15 +49,10 @@ logger.info(f'Le serveur tourne sur {host}:{port}')
 
 s.listen(1)
 
-last_client_timer = Timer(60,timeout)
+last_client_timer = RepeatTimer(60,timeout)
 last_client_timer.start()
 
 while True:
-    
-    if last_client_timer.finished.is_set():
-        last_client_timer.cancel()
-        last_client_timer = Timer(60,timeout)
-        last_client_timer.start()
     
     conn, addr = s.accept()
     last_client_timer.cancel()
@@ -88,7 +83,7 @@ while True:
         conn.sendall(bytes(server_response, 'utf-8'))
         
         logger.info(f"Réponse envoyée au client {ip_client} : {server_response}")
-        last_client_timer = Timer(60,timeout)
+        last_client_timer = RepeatTimer(60,timeout)
         last_client_timer.start()
 
     except socket.error:
